@@ -9,6 +9,6 @@ const projectAssignmentSchema = new Schema ({
 
 const ProjectAssignment = mongoose.model('ProjectAssignment', projectAssignmentSchema);
 
-module.exports = ProjectAssignment;
+export default ProjectAssignment;
 
 
