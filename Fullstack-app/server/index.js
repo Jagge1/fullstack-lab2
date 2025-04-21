@@ -58,13 +58,11 @@ app.post('/api/projects', async (req, res)=> {
     if (projects.length > 0) {
       return res.status(409).json({message: 'Project already exists'})
     }
-
     const newProject = {
       project_code: newPCode,
       project_name,
       project_description
     }
-
     await Project.create(newProject);
     res.status(201).json({message: 'Project was created'})
     
@@ -74,11 +72,36 @@ app.post('/api/projects', async (req, res)=> {
 });
 
 app.post('/api/project_assignments', async (req, res)=> {
+  const {employee_id, project_code, start_date} = req.body;
 
+  try {
+    const employee = await Employee.findOne({employee_id});
+    const project = await Project.findOne({project_code});
+
+    if (!employee || !project) {
+      return res.status(404).json({message: 'Employee or Project not found'});
+    }
+
+    const newProjectAssignment = {
+      employee_id: employee._id,
+      project_code: project._id,
+    }
+    
+    await ProjectAssignment.create(newProjectAssignment);
+    res.status(201).json({message: 'Project has been assigned'})
+    
+  } catch (error) {
+    return res.status(500).json({message: error.message});
+  }
 });
 
 app.get('/api/project_assignments', async (req, res)=> {
-
+  try {
+    const projectAssigments = await ProjectAssignment.find({});
+    res.status(200).json(projectAssigments);
+  } catch (error) {
+    return res.status(500).json({message: error.message});
+  }
 });
 
 app.listen(port, ()=> console.log(`Server is listening to port ${port}`));
