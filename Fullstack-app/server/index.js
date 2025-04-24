@@ -97,8 +97,10 @@ app.post('/api/project_assignments', async (req, res)=> {
 
 app.get('/api/project_assignments', async (req, res)=> {
   try {
-    const projectAssigments = await ProjectAssignment.find({});
-    res.status(200).json(projectAssigments);
+    const projectAssignments = await ProjectAssignment.find({})
+    .populate('employee_id')
+    .populate('project_code')
+    res.status(200).json(projectAssignments);
   } catch (error) {
     return res.status(500).json({message: error.message});
   }
