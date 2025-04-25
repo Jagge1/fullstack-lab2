@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "dev": "concurrently \"npm run server\" \"cd client && npm run dev\"",
-  "server": "nodemon server/index.js",
-  "client": "cd client && npm run dev"
-}
-,
+    "dev": "concurrently \"npm run server\" \"cd client && npm run dev\"",
+    "server": "nodemon server/index.js",
+    "client": "cd client && npm run dev"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.13.2",

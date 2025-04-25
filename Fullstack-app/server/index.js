@@ -5,12 +5,14 @@ import Employee from './models/employee.model.js'
 import ProjectAssignment from './models/projectAssignment.model.js'
 import Project from './models//project.model.js'
 import bcrypt from 'bcrypt';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cors());
 
 mongoose.connect(process.env.MONG_URI)
   .then(()=> 
@@ -20,7 +22,7 @@ mongoose.connect(process.env.MONG_URI)
 app.post('/api/employees', async (req, res)=>{
   const { employee_id, full_name, email, hashed_password } = req.body;
 
-  //Using bcrypt to hash userpassword
+  //Using bcrypt to hash user password
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(hashed_password, salt);
   //counting documents in collection to use for unique id
@@ -81,15 +83,14 @@ app.post('/api/project_assignments', async (req, res)=> {
     if (!employee || !project) {
       return res.status(404).json({message: 'Employee or Project not found'});
     }
-
     const newProjectAssignment = {
       employee_id: employee._id,
       project_code: project._id,
-    }
-    
+      start_date
+    }   
     await ProjectAssignment.create(newProjectAssignment);
-    res.status(201).json({message: 'Project has been assigned'})
-    
+    res.status(201).json({message: 'Project has been assigned'}); 
+
   } catch (error) {
     return res.status(500).json({message: error.message});
   }
