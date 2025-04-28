@@ -11,7 +11,7 @@ export function AssignmentTable() {
     async function fetchData() {
       const response = await fetch('http://localhost:5000/api/project_assignments');
       const data = await response.json();
-      setAssignment(data);
+      setAssignment(data.slice(-5));
     }
     fetchData(); 
 
