@@ -2,45 +2,50 @@ import React, {useState, useEffect} from 'react';
 
 export function AssignmentTable() {
 
-  const [assignments, setAssignment] = useState([]);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [assignments, setAssignment] = useState([]); //State to store project assignments
+  const [sortColumn, setSortColumn] = useState(null); //State to track which column is beings sorted
+  const [sortDirection, setSortDirection] = useState('asc'); //State to track sort direction
 
+  //fetches data
   useEffect(()=>{
     async function fetchData() {
       const response = await fetch('http://localhost:5000/api/project_assignments');
       const data = await response.json();
       setAssignment(data);
     }
-
     fetchData(); 
 
+    //Interval to refresh data every minute
     const updateInterval = setInterval(fetchData, 60000);
     return ()=> clearInterval(updateInterval);
 
   }, []);
 
+  //Handler to sort the table
   function sortHandler(column){
     let direction
 
+    //Toggles sort direction if same column is clicked twice
     if (sortColumn === column && sortDirection === 'asc') {
       direction = 'desc';
     } else {
       direction = 'asc';
     }
 
-
+    //Sorting a copy of assignment array
     const sorted = [...assignments].sort((a, b) => {
-
       const aValue = extractValue(a, column);
       const bValue = extractValue(b, column);
 
       if (aValue < bValue){
+        //If ascending, place a before b (-1); if descending, place b before a (1)
         return direction === 'asc' ? -1 : 1;}
 
       if (aValue > bValue){
+         //If ascending, place b before a (1); if descending, place a before b (-1)
         return direction === 'asc' ? 1 : -1;}
 
+      //If equal, keep original order
       return 0;
     })
 
@@ -49,6 +54,7 @@ export function AssignmentTable() {
     setSortDirection(direction);
   }
 
+  //A helper function to extract sorting value based on column
   function extractValue(item, column) {
     switch(column) {
       case 'employee_id': return item.employee_id?.employee_id ?? '';
@@ -59,7 +65,7 @@ export function AssignmentTable() {
     }
   }
 
-
+  //Render the assignment table
   return (
     <table className="project-table">
       <thead>
